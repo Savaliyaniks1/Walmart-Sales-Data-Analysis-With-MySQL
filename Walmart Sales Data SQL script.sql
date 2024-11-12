@@ -56,15 +56,18 @@ update sales
 set month_name = monthname(date);
 
 select * from sales;
-
+--------------------- generic questions ------------------------------
 -- How many unique cities does the data have?
 
 select distinct city from sales;
 
--- In which city is each branch?
+-- In which city is each branch ?
 
 select distinct city,branch from sales;
 
+-- --------------------------------------------------------------------
+-- ---------------------------- Product -------------------------------
+-- --------------------------------------------------------------------
 -- how many unique product line does the data have?
 
 select count(distinct product_line)
@@ -179,7 +182,10 @@ from sales
 group by customer_type
 order by VAT desc;
 
------------- customer ----------------------------
+
+-- --------------------------------------------------------------------
+-- -------------------------- Customers -------------------------------
+-- --------------------------------------------------------------------
 
 -- how many unique customer types does the data have?
 
@@ -226,3 +232,42 @@ from sales
 where branch = "A"
 group by day_name
 order by rating desc;
+
+
+-- --------------------------------------------------------------------
+-- ---------------------------- Sales ---------------------------------
+-- --------------------------------------------------------------------
+
+-- Number of sales made in each time of the day per weekday 
+SELECT
+	time_of_day,
+	COUNT(*) AS total_sales
+FROM sales
+WHERE day_name = "Sunday"
+GROUP BY time_of_day 
+ORDER BY total_sales DESC;
+
+
+-- Which of the customer types brings the most revenue?
+SELECT
+	customer_type,
+	SUM(total) AS total_revenue
+FROM sales
+GROUP BY customer_type
+ORDER BY total_revenue;
+
+-- Which city has the largest tax/VAT percent?
+SELECT
+	city,
+    ROUND(AVG(tax_pct), 2) AS avg_tax_pct
+FROM sales
+GROUP BY city 
+ORDER BY avg_tax_pct DESC;
+
+-- Which customer type pays the most in VAT?
+SELECT
+	customer_type,
+	AVG(tax_pct) AS total_tax
+FROM sales
+GROUP BY customer_type
+ORDER BY total_tax;
